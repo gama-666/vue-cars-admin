@@ -1,0 +1,84 @@
+.el-menu-vertical-demo .el-submenu .el-menu-item {
+    font-size: 14px;
+    padding-left: 50px !important;
+    &.is-active {
+        background-color: rgba(245, 108, 108, 0.1) !important;
+    }
+}
+.el-menu-vertical-demo li {
+    font-size: 14px !important;
+}
+//修改一级样式表
+.el-menu-vertical-demo li.el-submenu {
+    &.is-active .el-submenu__title {
+        background-color: $maincolor !important;
+    }
+}
+
+.el-table {
+    .el-table__footer-wrapper,.el-table__header-wrapper{
+       .cell{
+        color: #606266;
+        font-size: 15px;
+       }
+    }
+}
+
+.close {
+    .el-submenu{
+        &.isopend{
+            > .el-submenu__title{
+                background-color: $maincolor !important;
+            }
+        }
+    } 
+}
+
+.el-menu--vertical{
+    .el-menu{
+        background-color: $maincolor !important;
+    }
+    .el-menu-item{
+        line-height: 56px;
+    }
+    .el-menu-item:hover{
+        background-color: $maincolor !important; 
+    }
+}
+
+//表格居中
+.has-gutter{
+    th{
+        text-align: center !important;
+        color: #000000 !important;
+    }
+}
+
+.el-table__row{
+    td{
+        text-align: center !important;
+        font-size: 14px;
+    }
+}
+
+//弹窗
+.el-dialog__body{
+ padding: 30px 47px !important;   
+}
+.el-dialog__footer{
+    text-align: center !important;
+    padding-bottom: 50px !important;
+    .el-button{
+        width: 150px !important;
+        margin: 0 11px !important;
+    }
+}
+.el-form{
+    .el-form-item:last-child{
+        margin-bottom: 0 !important;
+    }
+}
+
+.el-select-dropdown__item{
+    font-size:  14px !important;
+}
