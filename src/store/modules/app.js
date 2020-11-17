@@ -6,6 +6,7 @@ const state = {
     // 取本地值，本地没值取默认值(临时)
     isCollpase: JSON.parse(sessionStorage.getItem('isCollpase')) || false,
     username: getUsername() || "",
+    currentRoute: "",
 
 }
 const getters = {
@@ -19,7 +20,10 @@ const mutations = {
     },
     GET_USERNAME: (state) => {
         state.username = getUsername()
-    }
+    },
+    SET_ROLES(state, value) {
+        state.currentRoute = value
+    },
 
 }
 const actions = {}

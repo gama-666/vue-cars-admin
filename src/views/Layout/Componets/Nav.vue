@@ -7,19 +7,22 @@
       <el-col :span="24">
         <el-menu
           router
-          default-active="1"
+          :default-active="currentRoute"
           class="el-menu-vertical-demo"
           :collapse="isCollpase"
           background-color="transparent"
           text-color="#fff "
           active-text-color="#fff"
         >
-          <template v-for="(item,index) in routes">
+          <template v-for="(item, index) in routes">
             <el-submenu v-if="!item.hidden" :key="item.id" :index="index + ''">
               <!-- 一级菜单 -->
               <template slot="title">
-                <svg-icon :iconName="item.meta.icon" :className="item.meta.icon" />
-                <span>{{item.meta.name}}</span>
+                <svg-icon
+                  :iconName="item.meta.icon"
+                  :className="item.meta.icon"
+                />
+                <span>{{ item.meta.name }}</span>
               </template>
               <!-- 子级菜单 -->
               <template v-for="subitem in item.children">
@@ -27,7 +30,8 @@
                   :key="subitem.id"
                   :index="subitem.path"
                   v-if="!subitem.hidden"
-                >{{subitem.meta.name}}</el-menu-item>
+                  >{{ subitem.meta.name }}</el-menu-item
+                >
               </template>
             </el-submenu>
           </template>
@@ -37,20 +41,28 @@
   </div>
 </template>
 <script>
-import { reactive, ref, computed } from "@vue/composition-api";
+import { reactive, ref, computed, watch } from "@vue/composition-api";
 export default {
   name: "navMenu",
   setup(props, { root }) {
     //1、数据位置 ************************************************************************/
     //、导航菜单
     const routes = reactive(root.$router.options.routes);
+    root.$store.commit("app/SET_ROLES", root.$router.currentRoute.path);
+    const currentRoute = computed(() => root.$store.state.app.currentRoute);
     //、监听值得变化，导航菜单的展开收起
     const isCollpase = computed(() => root.$store.state.app.isCollpase);
+
+    watch(currentRoute, (newCount, old) => {
+      console.log(newCount, old);
+    });
+
     return {
       isCollpase,
-      routes
+      routes,
+      currentRoute,
     };
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

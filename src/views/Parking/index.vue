@@ -23,9 +23,7 @@
             </el-col>
             <el-col :span="6">
                 <div class="text-right">
-                    <router-link to="/parkingAdd">
-                        <el-button type="primary">新增停车场</el-button>
-                    </router-link>
+                    <el-button @click="parkingAdd" type="primary">新增停车场</el-button>
                 </div>
             </el-col>
         </el-row>
@@ -107,6 +105,10 @@ export default {
     },
     handleChange(value) {
       console.log(value);
+    },
+    parkingAdd(){
+      this.$store.commit("app/SET_ROLES", '/parkingAdd');
+      this.$router.push({ path: 'parkingAdd' })
     }
   }
 };
