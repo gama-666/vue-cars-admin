@@ -13,6 +13,7 @@
           background-color="transparent"
           text-color="#fff "
           active-text-color="#fff"
+     
         >
           <template v-for="(item, index) in routes">
             <el-submenu v-if="!item.hidden" :key="item.id" :index="index + ''">
@@ -52,15 +53,11 @@ export default {
     const currentRoute = computed(() => root.$store.state.app.currentRoute);
     //、监听值得变化，导航菜单的展开收起
     const isCollpase = computed(() => root.$store.state.app.isCollpase);
-
-    watch(currentRoute, (newCount, old) => {
-      console.log(newCount, old);
-    });
-
+    
     return {
       isCollpase,
       routes,
-      currentRoute,
+      currentRoute, 
     };
   },
 };

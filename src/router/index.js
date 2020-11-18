@@ -36,7 +36,7 @@ export const defaultRouterMap = [{
         name: "首页"
       },
       component: () => import("../views/Console/"),
-    },]
+    }, ]
   },
   //停车场
   {
@@ -49,37 +49,38 @@ export const defaultRouterMap = [{
     },
     component: () => import("../views/Layout/"),
     children: [{
-      path: "/parkingIndex",
-      name: "ParkingIndex",
-      meta: {
-        name: "列表管理"
+        path: "/parkingIndex",
+        name: "ParkingIndex",
+        meta: {
+          name: "列表管理"
+        },
+        component: () => import("../views/Parking/"),
       },
-      component: () => import("../views/Parking/"),
-    },
-    {
-      path: "/parkingAdd",
-      name: "ParkingAdd",
-      meta: {
-        name: "新增停车场"
+      {
+        path: "/parkingAdd",
+        name: "ParkingAdd",
+        meta: {
+          name: "新增停车场"
+        },
+        component: () => import("../views/Parking/add"),
       },
-      component: () => import("../views/Parking/add"),
-    },]
+    ]
   },
-    //车辆品牌
-    {
-      path: "/carsBrand",
-      name: "CarsBrand",
-      redirect: "index",
-      meta: {
-        name: "车辆品牌",
-        icon: "menu"
-      },
-      component: () => import("../views/Layout/"),
-      children: [{
+  //车辆品牌
+  {
+    path: "/carsBrand",
+    name: "CarsBrand",
+    redirect: "index",
+    meta: {
+      name: "车辆品牌",
+      icon: "menu"
+    },
+    component: () => import("../views/Layout/"),
+    children: [{
         path: "/carsBrandIndex",
         name: "CarsBrandIndex",
         meta: {
-          name: "车辆列表"
+          name: "品牌列表"
         },
         component: () => import("../views/carsBrand/"),
       },
@@ -90,8 +91,38 @@ export const defaultRouterMap = [{
           name: "添加车辆品牌"
         },
         component: () => import("../views/carsBrand/add"),
-      },]
+      },
+    ]
+  },
+  //车辆管理
+  {
+    path: "/cars",
+    name: "Cars",
+    redirect: "index",
+    meta: {
+      name: "车辆管理",
+      icon: "menu"
     },
+    component: () => import("../views/Layout/"),
+    children: [
+      {
+        path: "/carsIndex",
+        name: "CarsIndex",
+        meta: {
+          name: "车辆列表"
+        },
+        component: () => import("../views/Cars/"),
+      },
+      {
+        path: "/carsAdd",
+        name: "CarsAdd",
+        meta: {
+          name: "新增车辆"
+        },
+        component: () => import("../views/Cars/add"),
+      },
+    ]
+  },
   //404页面
   {
     path: "/page404",
