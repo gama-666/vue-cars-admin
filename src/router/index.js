@@ -45,7 +45,7 @@ export const defaultRouterMap = [{
     redirect: "index",
     meta: {
       name: "停车场",
-      icon: "info"
+      icon: "parking"
     },
     component: () => import("../views/Layout/"),
     children: [{
@@ -73,7 +73,7 @@ export const defaultRouterMap = [{
     redirect: "index",
     meta: {
       name: "车辆品牌",
-      icon: "menu"
+      icon: "brand"
     },
     component: () => import("../views/Layout/"),
     children: [{
@@ -101,7 +101,7 @@ export const defaultRouterMap = [{
     redirect: "index",
     meta: {
       name: "车辆管理",
-      icon: "menu"
+      icon: "administration"
     },
     component: () => import("../views/Layout/"),
     children: [

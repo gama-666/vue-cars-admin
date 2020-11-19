@@ -5,7 +5,7 @@
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="区域">
-       <el-cascader v-model="form.area" :options="options" :props="{ expandTrigger: 'hover' }" @change="handleChange"></el-cascader>
+        <CityArea :city_value.sync="form.area" />
       </el-form-item>
       <el-form-item label="类型" prop="resource">
         <el-radio-group v-model="form.type">
@@ -22,15 +22,14 @@
           <el-radio label="2">禁用</el-radio>
         </el-radio-group>
       </el-form-item>
-
       <el-form-item label="位置">
-        <div class="address-map"></div>
+        <div class="address-map">
+          <Map @lonlag="getLAL" />
+        </div>
       </el-form-item>
-
       <el-form-item label="经纬度">
-       <el-input v-model="form.address"></el-input>
+        <el-input v-model="form.lonlag"></el-input>
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" @click="onSubmit">新增</el-button>
       </el-form-item>
@@ -38,63 +37,44 @@
   </div>
 </template>
 <script>
+import Map from "@/componeents/amap";
+import CityArea from "@/componeents/common/cityArea";
 export default {
-  name:"ParkingAdd",
+  name: "ParkingAdd",
+  components: { Map, CityArea },
   data() {
     return {
-      form: 
-        {
-          name: "",
-          type: "",
-          area: "",
-          carsNumber:"",
-          disabled: "1",
-          address: "32155,565654",
-          operate: ""
-        },
-        options: [
-        {
-          value: "fankui",
-          label: "安徽省",
-          children: [
-            {
-              value: "1111",
-              label: "合肥市",
-              children: [
-                { value: "444", label: "包河区" },
-                { value: "555", label: "蜀山区" },
-                { value: "666", label: "瑶海区" }
-              ]
-            },
-            {
-              value: "2222",
-              label: "安庆市"
-            }
-          ]
-        }
-      ]
-    
+      form: {
+        area: "", //省市区
+        lonlag: "", //经纬度
+        name: "",
+        type: "",
+        carsNumber: "",
+        disabled: "1",
+        operate: "",
+      },
     };
   },
   methods: {
-    onSubmit() {
-      console.log("submit!");
+    //获取经纬度
+    getLAL(data) {
+      this.form.lonlag = data.value;
     },
-        handleChange(value) {
-      console.log(value);
-    }
-  }
+    //新增按钮
+    onSubmit() {
+      console.log(this.form.area);
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.parking-add{
-  width: 600px;
+.parking-add {
+  width: 100%;
 }
-.address-map{
-  width: 500px;
-  height: 300px;
-  background-color: red;
-  border:1px solid #000000;
+.address-map {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
 }
 </style>

@@ -99,6 +99,9 @@ export default {
       ]
     };
   },
+ watch: {
+  '$route':'getPath'
+},
   methods: {
     onSubmit() {
       console.log("submit!");
@@ -108,6 +111,7 @@ export default {
     },
     parkingAdd(){
       this.$store.commit("app/SET_ROLES", '/parkingAdd');
+        const currentRoute = this.$store.state.app.currentRoute;
       this.$router.push({ path: 'parkingAdd' })
     }
   }

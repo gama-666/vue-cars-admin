@@ -38,7 +38,7 @@
             <el-input v-model="form.name"></el-input>
           </el-col>
           <el-col :span="10">
-            <span>下次保养时间 2021年5月10日</span>
+            <span>下次保养日期 2021年5月10日</span>
           </el-col>
         </el-row>
       </el-form-item>
