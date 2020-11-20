@@ -1,52 +1,21 @@
 import router from "./index";
+
 import {
     getToken,
-    removeUsername,
-    removeToken
 } from "@/utils/app";
-import store from "../store/index"
 
-
-//添加白名单，数组indexOf方法，判断数组中是否存在指定的某个对象，如果不存在，则返回-1
-const wihteRouter = ['/login'];
 
 //路由守卫
 router.beforeEach((to, from, next) => {
-    if (getToken()) {
-        if (to.path === "/login") {
-            removeUsername()
-            removeToken()
-            next()
-        } else {
-            if (store.getters['permission/roles'].length === 0) {
-                store.dispatch("permission/getRoles").then((respone) => {
-                    let role = respone
-                    store.dispatch("permission/createRouter", role).then((respone) => {
-                        let addRouter = store.getters['permission/addRouter'];
-                        let allRouter = store.getters['permission/allRouter'];
-                        //路由更新
-                        router.options.routes = allRouter
-                        //添加动态路由
-                        router.addRoutes(addRouter)
-                        next({...to,replace:true})
-                     
-                    })
-                });
-            } else {
-                next()
-            }
+    // 获取 token 是否存在
+    if(getToken()){
+        next();
+    }else{
+        if(to.path === "/login") { // 这里是处理 login 页面的时候，没有 token
+            next();
+        }else{
+            next({ path: "/login" });  // 这里是处理管理后台时没有 token ，进行 path 路由指向。
         }
-    } else {
-        if (wihteRouter.indexOf(to.path) !== -1) {
-            next()
-        } else {
-            next("/login")
-        }
-        /* 
-        1、直接进入index的时候，参数to被改变成/index，触发路由指向，会执行beforeEach
-        2、再一次next指向login，再次发生路由指向，在执行beforeEach，参数to被改变成/login
-        3、白名单判断存在，则直接执行next()，因为没有参数，所以不会再次执行beforeEach
-        */
     }
 })
 

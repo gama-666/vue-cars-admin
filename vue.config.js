@@ -51,23 +51,19 @@ module.exports = {
     // 开发环境配置
     devServer: {
         open: false, // 启动服务后是否打开浏览器
-        host: '0.0.0.0',//指定使用地址，默认localhost，0.0.0.0代表可以被外界访问
+        host: '0.0.0.0', //指定使用地址，默认localhost，0.0.0.0代表可以被外界访问
         port: 8080, // 服务端口
-        hot: true,//开启热更新
+        hot: true, //开启热更新
         hotOnly: false,
-        proxy: {  // 设置代理
-            '/devapi': {
-                /* 目标代理服务器地址 */
-                target: 'http://www.web-jshtml.cn/productapi/token',
-                /* 允许跨域 */
+        proxy: {
+            [process.env.VUE_APP_API]: {
+                target: process.env.VUE_API_DEV_TARGET, //API服务器的地址
                 changeOrigin: true,
-                ws: true,
                 pathRewrite: {
-                    '^/devapi': ''
+                    [`^${process.env.VUE_APP_API}`]: ''
                 }
             }
-        },
-        before: app => {
+            // http://www.web-jshtml.cn/api/vue3  /api/getCode
         }
     },
     pluginOptions: {

@@ -1,5 +1,5 @@
 //获取经纬度
-export function getLonLag(e) {
+export function getLngLat(e) {
     return {
         lng: e.lnglat.getLng(),
         lat: e.lnglat.getLat(),

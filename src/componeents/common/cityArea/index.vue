@@ -15,10 +15,18 @@ export default {
       type: String,
       default: "",
     },
+    mapLocation: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
+    const _this = this;
     return {
       value: "",
+      addressCode: [],
+      addressValue: [],
+      addressData: {},
       cascader_options: [],
       cascader_props: {
         lazy: true,
@@ -45,15 +53,52 @@ export default {
               item.label = item[`${JsonType[level].type.toUpperCase()}_NAME`];
               if (level == 2) item.leaf = level >= 2;
             });
+            _this.addressData[`${JsonType[level].type}`] = data;
             resolve(data);
           });
+          // 获取addres
+          if (level != 0) {
+            _this.getAddress(node);
+          }
         },
       },
     };
   },
   methods: {
+    //级联框的值
     handleChange(value) {
       this.$emit("update:city_value", value.join());
+      //匹配最后一项
+      const lastCode = value[value.length - 1];
+      const areaCode = this.addressData.area.filter(
+        (item) => lastCode === item.value
+      );
+      this.addressCode[2] = areaCode[0].label;
+      this.addressValue[2] = areaCode[0].value;
+      //回调,执行组件函数
+      this.getAddress();
+    },
+
+    // 获取中文地址
+    getAddress(node) {
+      if (node) {
+        const index = node.level - 1;
+        this.addressCode[index] = node.label;
+        this.addressValue[index] = node.value;
+      }
+      if (this.mapLocation) {
+        this.$emit("address", {
+          fn: "setMapcenter",
+          data: {
+            addressCode: this.addressCode.join(""),
+            addressValue: this.addressValue.join(","),
+          },
+        });
+      }
+    },
+    //清除
+    clear() {
+      this.value = "";
     },
   },
 };
@@ -62,6 +107,7 @@ export default {
 </style>
 
 <!--
-1、组件传入的 city_value 属性用 props 接收
+1、组件传入的 city_value 省市区
 2、this.$emit（"update:city_value"）反向修改，结合组件属性的.sync
+3、组件传入的 mapLocation:true 判断是否交互
 -->

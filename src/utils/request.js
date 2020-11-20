@@ -2,11 +2,10 @@ import axios from "axios";
 import { Message } from 'element-ui';
 import { getToken, getUsername } from "./app";
 
-const BASEURL = process.env.NODE_ENV === 'production' ? '/productapi' : '/devapi';
-
+// 创建实例
 const service = axios.create({
-  baseURL: BASEURL,
-  timeout: 15000
+  baseURL: process.env.VUE_APP_API,    // 请求地址
+  timeout: 5000,  // 超时
 });
 
 // 添加请求拦截器
@@ -24,7 +23,6 @@ service.interceptors.request.use(function (config) {
 // 添加响应拦截器
 service.interceptors.response.use(function (response) {
   // 对响应数据做点什么
-
   let data = response.data;
   if (data.resCode !== 0) {
     Message.error(data.message);
