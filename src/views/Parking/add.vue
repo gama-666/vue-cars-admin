@@ -2,22 +2,22 @@
   <div class="parking-add">
     <el-form ref="ruleForm" :rules="rules" :model="form" label-width="100px">
       <el-form-item label="停车场名称" prop="parkingName">
-        <el-input v-model="form.parkingName"></el-input>
+        <el-input v-model="form.parkingName" class="width-200"></el-input>
       </el-form-item>
       <el-form-item label="区域" prop="area">
         <CityArea ref="cityAred" :mapLocation="true" :city_value.sync="form.area" @address="callbackAddress"/>
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
-          <el-radio v-for="item in type" :key="item.label" :label="item.value" >{{ item.label }}</el-radio>
+          <el-radio v-for="item in parking_type" :key="item.label" :label="item.value" >{{ item.label }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="可停放车辆" prop="carsNumber">
-        <el-input v-model.number="form.carsNumber"></el-input>
+        <el-input v-model.number="form.carsNumber" class="width-200"></el-input>
       </el-form-item>
       <el-form-item label="禁启用" prop="status">
         <el-radio-group v-model="form.status">
-          <el-radio v-for="item in status" :key="item.label" :label="item.value">{{ item.label }}</el-radio>
+          <el-radio v-for="item in parking_status" :key="item.label" :label="item.value">{{ item.label }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="位置">
@@ -25,11 +25,11 @@
           <Map @callback="getLnglat" ref="amap" />
         </div>
       </el-form-item>
-      <el-form-item label="经纬度" prop="lnglat">
-        <el-input v-model="form.lnglat"></el-input>
+      <el-form-item label="经纬度" prop="lnglat"  >
+        <el-input v-model="form.lnglat" class="width-200"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('ruleForm')">新增</el-button>
+        <el-button type="primary" :loaging="button_loading" @click="onSubmit('ruleForm')">新增</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -45,14 +45,8 @@ export default {
   components: { Map, CityArea },
   data() {
     return {
-      status: [
-        { label: "启用", value: 1 },
-        { label: "禁用", value: 2 },
-      ],
-      type: [
-        { label: "室内", value: 1 },
-        { label: "室外", value: 2 },
-      ],
+      parking_status: this.$store.state.app.parking_status,
+      parking_type: this.$store.state.app.parking_type,
       form: {
         parkingName: "", //停车场名称  String
         area: "", //省市区     String
@@ -77,6 +71,8 @@ export default {
           { required: true, message: "经纬度不能为空", trigger: "change" },
         ],
       },
+      //按钮加载状态
+      button_loading: false
     };
   },
   methods: {
@@ -97,25 +93,29 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(this.form);
           //添加停车场接口
           this.addParjing();
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     //新增停车场接口
     addParjing(){
+      console.log(this.form)
+      this.button_loading = true;
       ParkingAdd(this.form).then((response) => {
           let data = response.data;
            this.$message({
             message: data.message,
             type: "success"
           });
-          this.resetForm("ruleForm");
-          this.$refs.cityAred.clear()
+          this.button_loading = false;
+          this.resetForm("ruleForm"); //重置表单
+          this.$refs.cityAred.clear() //重置级联选择
+          this.$refs.amap.clearMarker() //清除点覆盖物
+      }).catch(()=>{
+          this.button_loading = false;
       });
     },
     //重置表单

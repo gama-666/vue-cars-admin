@@ -3,15 +3,25 @@ import {
 } from "../../utils/app.js";
 
 const state = {
+    // 禁启用及类型数据公共静态数据
+    parking_type: [
+        { label: "室内", value: 1 },
+        { label: "室外", value: 2 }
+    ],  
+    parking_status: [
+        { label: "启用", value: 1 },
+        { label: "禁用", value: 2 }
+    ],
+
     // 取本地值，本地没值取默认值(临时)
     isCollpase: JSON.parse(sessionStorage.getItem('isCollpase')) || false,
     username: getUsername() || "",
     currentRoute: "",
-
 }
 const getters = {
-   
+
 }
+
 const mutations = {
     SET_COLLPASE: (state) => {
         state.isCollpase = !state.isCollpase;

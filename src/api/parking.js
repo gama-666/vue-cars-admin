@@ -1,6 +1,6 @@
 import http from "@/utils/request";
 
-/*注册*/
+/*新增停车场*/
 export function ParkingAdd(data = {}) {
     return http.request({
         method: "post",
@@ -8,3 +8,13 @@ export function ParkingAdd(data = {}) {
         data
     })
 }
+
+/*停车场列表*/
+export function ParkingList(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/parking/list/",
+        data
+    })
+}
+

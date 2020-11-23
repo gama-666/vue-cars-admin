@@ -9,7 +9,7 @@ import { lazyAMapApiLoaderInstance } from "vue-amap";
 //方法
 import { getLngLat } from "./common";
 import { addressSetMapCenter } from "./location";
-import { mapSetMarker } from "./marker";
+import { mapSetMarker ,amapClearMarker} from "./marker";
 
 export default {
   name: "Amap",
@@ -43,14 +43,30 @@ export default {
     });
   },
   methods: {
+    //创建地图
+    mapCreate(){
+      this.map = new AMap.Map("container", {
+        zoom: this.zoom,
+        resizeEnable: true,
+      });
+    },
+    //销毁地图
+    mapDestroy(){
+      this.map && this.map.destroy()
+    },
     //根据区域定位
     setMapcenter(value) {
       addressSetMapCenter(value, this.map);
     },
     //设置点覆盖物
-    setMarker() {
-      mapSetMarker(this.lnglat, this.map);
+    setMarker(lnglat) {
+      
+      mapSetMarker(lnglat || this.lnglat, this.map);
     },
+    //清楚点覆盖物
+    clearMarker(){
+      amapClearMarker(this.map)
+    }
   },
 };
 
