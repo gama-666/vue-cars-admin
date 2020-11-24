@@ -4,7 +4,6 @@
           <div class="address-map">
           <Map  ref="amap" />
         </div>
-        <el-button type="primary" @click="onSubmit" class="on-submit">确定</el-button>
       </el-form-item>
     </el-form>
     </el-dialog>
@@ -38,10 +37,6 @@ export default {
     close() {
       this.$emit("update:flagVisble", false);
       this.$refs.amap.mapDestroy()
-    },
-    //确定
-    onSubmit() {
-      this.$emit("update:flagVisble", false);
     },
     opened() {
       this.$refs.amap.mapCreate()

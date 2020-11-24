@@ -1,9 +1,11 @@
 <template>
   <el-cascader
+    :class="initValueFlag?'cascader-input':''"
     v-model="value"
     :options="cascader_options"
     :props="cascader_props"
     @change="handleChange"
+    :placeholder = "initValue"
   ></el-cascader>
 </template>
 <script>
@@ -28,6 +30,8 @@ export default {
       addressValue: [],
       addressData: {},
       cascader_options: [],
+      initValue:"请选择省市区",
+      initValueFlag:false,
       cascader_props: {
         lazy: true,
         lazyLoad(node, resolve) {
@@ -65,6 +69,13 @@ export default {
     };
   },
   methods: {
+    //初始化默认值
+    initDefault(value){
+      if(value) {
+        this.initValueFlag = true;
+        this.initValue  = value.split(",").join("/");
+      }
+    },
     //级联框的值
     handleChange(value) {
       this.$emit("update:city_value", value.join());
@@ -78,7 +89,6 @@ export default {
       //回调,执行组件函数
       this.getAddress();
     },
-
     // 获取中文地址
     getAddress(node) {
       if (node) {

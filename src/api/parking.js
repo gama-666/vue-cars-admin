@@ -18,3 +18,30 @@ export function ParkingList(data = {}) {
     })
 }
 
+/*停车场详情*/
+export function parkingDetailed(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/parking/detailed/",
+        data
+    })
+}
+
+/*停车场修改*/
+export function parkingEdit(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/parking/edit/",
+        data
+    })
+}
+
+/*停车场删除*/
+export function parkingDelete(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/parking/delete/",
+        data
+    })
+}
+

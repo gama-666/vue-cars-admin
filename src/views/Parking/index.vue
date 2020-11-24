@@ -38,10 +38,14 @@
     </div>
     <!-- 表格数据 -->
     <template>
-      <el-table :data="tableData" border style="width: 100%">
+      <el-table :data="tableData" v-loading="table_loading" border style="width: 100%">
         <el-table-column type="selection" width="40"></el-table-column>
         <el-table-column prop="parkingName"  label="停车场名称" ></el-table-column>
-        <el-table-column prop="type" label="停车场类型"></el-table-column>
+        <el-table-column prop="type" label="停车场类型">
+          <template slot-scope="scope">
+            <span>{{getTyle(scope.row.type)}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="address" label="区域"></el-table-column>
         <el-table-column prop="carsNumber" label="可停放车辆"></el-table-column>
         <el-table-column prop="status" label="禁启用">
@@ -55,9 +59,9 @@
           </template>
         </el-table-column>     
         <el-table-column prop="operate" label="操作">
-          <template>
-            <el-button type="danger" size="mini">编辑</el-button>
-            <el-button type="warning" size="mini">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="parkingEdit(scope.row.id)">编辑</el-button>
+            <el-button type="warning" size="mini" @click="deleteParking(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,8 +87,8 @@
 import CityArea from "@/componeents/common/cityArea";
 //弹窗，显示地图 组件
 import ShowMaoLocation from "@/componeents/dialog/showMaoLocation"
-//接口 停车场列表
-import { ParkingList } from "@/api/parking";
+//接口 停车场
+import { ParkingList,parkingDelete} from "@/api/parking";
 export default {
   name: "ParkingIndex",
   components: { CityArea,ShowMaoLocation },
@@ -125,9 +129,22 @@ export default {
       const currentRoute = this.$store.state.app.currentRoute;
       this.$router.push({ path: "parkingAdd" });
     },
-    //区域（省市区）回调,执行组件函数
-    callbackAddress(params) {
-      this.form.area = params.data.addressValue;
+    
+    deleteParking(id){
+      this.$confirm('此操作将永久删除该信息', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+        parkingDelete({id}).then(response=>{
+           let data = response.data;
+           this.$message({
+            message: data.message,
+            type: "success"
+          });
+          this.getParkingList()
+         })
+      }).catch()
     },
     //停车场列表请求接口
     getParkingList() {
@@ -144,9 +161,28 @@ export default {
       if(this.search_key && this.keyword)requestData[this.search_key] = this.keyword;
       //发送请求
       ParkingList(requestData).then((respone) => {
+        this.table_loading = false;
         this.total = respone.data.data.total;
         this.tableData = respone.data.data.data;
+      }).catch(error=>{
+        this.table_loading = false;
       });
+    },
+    //编辑按钮，跳转编辑页面
+    parkingEdit(id){
+      this.$router.push({
+        path:"parkingAdd",
+        query: { id }
+      })
+    },    
+    //区域（省市区）回调,执行组件函数
+    callbackAddress(params) {
+      this.form.area = params.data.addressValue;
+    },
+    //返回类型文本
+    getTyle(value){
+      const data = this.parking_type.filter(item => item.value == value);
+      if(data && data.length > 0) return data[0].label;
     },
     //页码(10条/页、20条每页、......)
     handleSizeChange(value) {
