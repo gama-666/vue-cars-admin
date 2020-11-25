@@ -1,7 +1,7 @@
 <template> 
     <el-dialog :title="data.parkingName" :visible.sync="dialogVisble" @close="close" @opened="opened" :close-on-click-modal="false" >
       <el-form ref="form" :model="data" label-width="100px">
-          <div class="address-map">
+          <div class="address-map" >
           <Map  ref="amap" />
         </div>
       </el-form-item>

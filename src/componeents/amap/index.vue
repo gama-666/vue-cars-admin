@@ -62,7 +62,7 @@ export default {
     },
      //地图加载完成
     mapLoad(){
-      if(this.options.mapLoad){
+      if(this.options){
         this.$emit("callback",{
           function:"mapLoad"
         })

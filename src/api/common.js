@@ -17,3 +17,13 @@ export function GetCity(data) {
         data: data
     })
 }
+
+
+/*传入url请求接口*/
+export function GetTableData(params = {}) {
+    return http.request({
+        method: "post",
+        url: params.url,
+        data:params.data
+    })
+}

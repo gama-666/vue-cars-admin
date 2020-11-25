@@ -3,6 +3,16 @@ import {
 } from "../../utils/app.js";
 
 const state = {
+
+    parking_type_json: {
+       1: { label: "室内", value: 1 },
+       2: { label: "室外", value: 2 }
+    },  
+    parking_status_json: {
+       1: { label: "启用", value: 1 },
+       2: { label: "禁用", value: 2 }
+    },
+
     // 禁启用及类型数据公共静态数据
     parking_type: [
         { label: "室内", value: 1 },

@@ -80,11 +80,11 @@ export default {
   methods: {
     //回调,执行组件函数
     callbackAddress(params) {
-      if (params.fn) this[params.fn](params.data.addressCode);
+      if (params.function) this[params.function](params.data.addressCode);
       this.form.area = params.data.addressValue;
     },
     callbackComponent(params){
-        if(params.function) this[params.function](params);
+       if(params.function) this[params.function](params);   
     },
     //获取经纬度,输入框显示
     getLnglat(params) {
@@ -112,7 +112,6 @@ export default {
     //新增停车场接口
     addParKing(){
       this.button_loading = true;
-
       ParkingAdd(this.form).then((response) => {
           let data = response.data;
            this.$message({
