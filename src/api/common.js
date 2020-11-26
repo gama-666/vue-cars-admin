@@ -1,4 +1,5 @@
 import http from "@/utils/request";
+import  requestUrl  from "./requestUrl";
 
 /*注册*/
 export function loadTableData(parms) {
@@ -23,7 +24,7 @@ export function GetCity(data) {
 export function GetTableData(params = {}) {
     return http.request({
         method: "post",
-        url: params.url,
+        url: requestUrl[params.url],
         data:params.data
     })
 }
