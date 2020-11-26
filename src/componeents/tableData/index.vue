@@ -37,8 +37,6 @@
 </template>
 <script>
 import { GetTableData } from "@/api/common";
-
-
 export default {
   name: "tableData",
   props: {

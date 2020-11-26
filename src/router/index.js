@@ -83,15 +83,7 @@ export const defaultRouterMap = [{
           name: "品牌列表"
         },
         component: () => import("../views/carsBrand/"),
-      },
-      {
-        path: "/carsBrandAdd",
-        name: "CarsBrandAdd",
-        meta: {
-          name: "添加车辆品牌"
-        },
-        component: () => import("../views/carsBrand/add"),
-      },
+      }
     ]
   },
   //车辆管理

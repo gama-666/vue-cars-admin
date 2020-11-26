@@ -6,6 +6,8 @@ import login from "./modules/login"
 import dialog from "./modules/dialog"
 import infoDetails from "./modules/infoDetails"
 import permission from "./modules/permission"
+import config from "./modules/config"
+
 
 export default new Vuex.Store({
   modules: {
@@ -13,6 +15,7 @@ export default new Vuex.Store({
     dialog,
     login,
     infoDetails,
-    permission
+    permission,
+    config
   }
 });

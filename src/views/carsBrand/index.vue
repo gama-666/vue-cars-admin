@@ -40,80 +40,52 @@
       </el-row>
     </div>
     <!-- 表格数据 -->
-    <template>
-      <el-table :data="tableData" border style="width: 100%">
-        <el-table-column type="selection" width="40"></el-table-column>
-        <el-table-column prop="name" label="LOGO"></el-table-column>
-        <el-table-column prop="type" label="车辆品牌"></el-table-column>
-        <el-table-column prop="area" label="品牌型号"></el-table-column>
-        <el-table-column prop="disabled" label="禁启用">
-          <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.disabled"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            ></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column prop="operate" label="操作">
-          <template>
-            <el-button type="danger" size="mini">编辑</el-button>
-            <el-button type="warning" size="mini">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </template>
+    <TableData ref="table" :config="table_conging"></TableData>
     <!-- dialog 弹窗 -->
-    <AddCarsBrand :flagVisble.sync="dialog_show" :form="form"/>
+    <AddCarsBrand :flagVisble.sync="dialog_show"/>
   </div>
 </template>
 <script>
+import TableData from "@/componeents/tableData";
+
 import AddCarsBrand from "@/componeents/dialog/addCarsBrand";
 export default {
   name: "CarsBrandIndex",
-  components: { AddCarsBrand },
+  components: { AddCarsBrand ,TableData},
   data() {
     return {
       //弹窗标记
       dialog_show: false,
       formLabelWidth: "120px",
-      //表单数据
+      //搜索
       form: {
         parking_name: "",
-        name: "",
-        type: "",
-        area: "",
-        carsNumber: "",
-        disabled: "1",
-        address: "32155,565654",
-        operate: "",
+        type: ""
       },
-      //表格数据
-      tableData: [
-        {
-          name: "包河区停车场",
-          type: "室内",
-          area: "合肥市包河区万岗路",
-          carsNumber: 20,
-          disabled: true,
-          address: "32155,565654",
-          operate: "",
+        //tableData 表格配置
+      table_conging: {
+        thend: [
+          { prop: "nameCh", label: "品牌名称（中文）" },
+          { prop: "nameEn", label: "品牌名称（英文）" },
+          { prop: "imgUrl", label: "品牌LOGO",},
+          { prop: "status", label: "禁启用"},
+          { prop: "operate",  label: "操作"},
+        ],
+        url: "barndList",
+        data: {
+          pageSize: 10,
+          pageNumber: 1,
         },
-      ],
+      },
     };
   },
   methods: {
     onSubmit() {
       this.dialog_show = false;
-      console.log("submit!");
-    },
-    handleChange(value) {
-      console.log(value);
-    },
+    }
   },
 };
 </script>
-
 <style lang="scss" scoped>
 .text-right {
   text-align: right;

@@ -5,24 +5,55 @@
         <el-col :span="22">
           <el-form :inline="true" :model="form" class="demo-form-inline">
             <el-form-item label="区域">
-            <CityArea ref="cityAred" :mapLocation="true" :city_value.sync="form.area" @address="callbackAddress"/>
+              <CityArea
+                ref="cityAred"
+                :mapLocation="true"
+                :city_value.sync="form.area"
+                @address="callbackAddress"
+              />
             </el-form-item>
             <el-form-item label="类型">
-              <el-select v-model="form.type" placeholder="类型" class="width-120"  >
-                <el-option  v-for="item in parking_type" :key="item.label" :label="item.label"  :value="item.value"></el-option>
+              <el-select
+                v-model="form.type"
+                placeholder="类型"
+                class="width-120"
+              >
+                <el-option
+                  v-for="item in parking_type"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="禁启用">
-              <el-select v-model="form.status" placeholder="禁启用" class="width-120" >
-                <el-option  v-for="item in parking_status" :key="item.label" :label="item.label"  :value="item.value" ></el-option>
+              <el-select
+                v-model="form.status"
+                placeholder="禁启用"
+                class="width-120"
+              >
+                <el-option
+                  v-for="item in parking_status"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="关键字">
-              <el-select v-model="search_key"  placeholder="请选择"  class="width-120">
+              <el-select
+                v-model="search_key"
+                placeholder="请选择"
+                class="width-120"
+              >
                 <el-option label="停车场名称" value="parkingName"></el-option>
                 <el-option label="详细区域" value="address"></el-option>
               </el-select>
-              <el-input  v-model="keyword" placeholder="请输入关键字按Enter键搜索" class="width-200 left-10"></el-input>
+              <el-input
+                v-model="keyword"
+                placeholder="请输入关键字按Enter键搜索"
+                class="width-200 left-10"
+              ></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="danger" @click="search">搜索</el-button>
@@ -41,7 +72,9 @@
       <!-- 禁启用 -->
       <template v-slot:status="slotData">
         <el-switch
+          @change="switchChang(slotData.data)"
           v-model="slotData.data.status"
+          :disabled="slotData.data.id == switch_disabled"
           active-color="#13ce66"
           inactive-color="#ff4949"
         ></el-switch>
@@ -80,7 +113,7 @@ import TableData from "@/componeents/tableData";
 //弹窗，显示地图 组件
 import ShowMaoLocation from "@/componeents/dialog/showMaoLocation";
 //接口 停车场
-import { parkingDelete } from "@/api/parking";
+import { parkingDelete, parkingStatus } from "@/api/parking";
 export default {
   name: "ParkingIndex",
   components: { CityArea, ShowMaoLocation, TableData },
@@ -138,6 +171,8 @@ export default {
       },
       keyword: "",
       search_key: "",
+      //禁启用按钮状态，防止连续点击
+      switch_disabled: "",
       //停车场禁启用及停车场类型数据
       parking_status: this.$store.state.app.parking_status,
       parking_type: this.$store.state.app.parking_type,
@@ -174,6 +209,23 @@ export default {
           });
         })
         .catch();
+    },
+    //禁启用
+    switchChang(params) {
+      const responseData = {
+        id: params.id,
+        status: params.status,
+      };
+      this.switch_disabled = params.id;
+      parkingStatus(responseData)
+        .then((response) => {
+          let data = response.data;
+          this.$message({
+            message: data.message,
+            type: "success",
+          });
+          this.switch_disabled = "";
+        }).catch(error => { this.switch_disabled = ""});
     },
     //编辑按钮，跳转编辑页面
     parkingEdit(id) {
