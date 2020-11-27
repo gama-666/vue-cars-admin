@@ -1,7 +1,7 @@
 import http from "@/utils/request";
 
 
-/*汽车标志*/
+/*汽车品牌标志*/
 export function BrandLogo(data = {}) {
     return http.request({
         method: "post",
@@ -19,3 +19,33 @@ export function BrandAdd(data = {}) {
         data
     })
 }
+
+/*汽车品牌禁启用*/
+export function BrandStatus(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/brand/status/",
+        data
+    })
+}
+/*汽车品牌删除*/
+export function BrandDelete(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/brand/delete/",
+        data
+    })
+}
+
+/*汽车品牌删除*/
+export function BrandEdit(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/brand/edit/",
+        data
+    })
+}
+
+
+
+

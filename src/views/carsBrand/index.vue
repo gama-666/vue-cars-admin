@@ -32,23 +32,38 @@
         </el-col>
         <el-col :span="6">
           <div class="text-right">
-            <el-button type="primary" @click="dialog_show = true"
-              >新增车辆品牌</el-button
-            >
+            <el-button type="primary" @click="dialog_show = true">新增车辆品牌</el-button>
           </div>
         </el-col>
       </el-row>
     </div>
     <!-- 表格数据 -->
-    <TableData ref="table" :config="table_conging"></TableData>
+    <TableData ref="table" :config="table_conging">
+     <!-- 禁启用 -->
+      <template v-slot:status="slotData">
+        <el-switch
+          @change="switchChang(slotData.data)"
+          v-model="slotData.data.status"
+          :disabled="slotData.data.id == switch_disabled"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+        ></el-switch>
+      </template>
+       <!-- 操作 -->
+      <template v-slot:operation="slotData">
+        <el-button type="danger" size="mini"  @click="brandEdit(slotData.data)">编辑</el-button>
+        <el-button type="warning" size="mini" @click="deletebrand(slotData.data.id)" >删除</el-button>
+      </template>
+   
+    </TableData>
     <!-- dialog 弹窗 -->
-    <AddCarsBrand :flagVisble.sync="dialog_show"/>
+    <AddCarsBrand :flagVisble.sync="dialog_show" :data="form"/>
   </div>
 </template>
 <script>
 import TableData from "@/componeents/tableData";
-
 import AddCarsBrand from "@/componeents/dialog/addCarsBrand";
+import { BrandStatus,BrandDelete } from "@/api/barnd";
 export default {
   name: "CarsBrandIndex",
   components: { AddCarsBrand ,TableData},
@@ -62,27 +77,83 @@ export default {
         parking_name: "",
         type: ""
       },
-        //tableData 表格配置
+      //禁启用按钮状态，防止连续点击
+      switch_disabled: "",
+      //tableData 表格配置
       table_conging: {
+        //表头
         thend: [
           { prop: "nameCh", label: "品牌名称（中文）" },
           { prop: "nameEn", label: "品牌名称（英文）" },
           { prop: "imgUrl", label: "品牌LOGO",},
-          { prop: "status", label: "禁启用"},
-          { prop: "operate",  label: "操作"},
+          { 
+            prop: "status", 
+            label: "禁启用",
+            type: "slot",
+            slotName: "status"
+          },
+          { 
+            prop: "operate",  
+            label: "操作",
+            type: "slot",
+            slotName: "operation",
+          },
         ],
+        //请求地址和参数
         url: "barndList",
         data: {
           pageSize: 10,
           pageNumber: 1,
         },
       },
+      form: {},
     };
   },
   methods: {
     onSubmit() {
       this.dialog_show = false;
-    }
+    },
+    //编辑汽车品牌
+    brandEdit(params){
+      this.form = {...params};
+      this.dialog_show = true; 
+    },
+    //删除汽车品牌
+    deletebrand(id) {
+      this.$confirm("此操作将永久删除该信息", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          BrandDelete({ id }).then((response) => {
+            let data = response.data;
+            this.$message({
+              message: data.message,
+              type: "success",
+            });
+            this.$refs.table.requestData();
+          });
+        })
+        .catch();
+    },
+    //汽车品牌禁启用
+    switchChang(params) {
+      const responseData = {
+        id: params.id,
+        status: params.status,
+      };
+      this.switch_disabled = params.id;
+      BrandStatus(responseData)
+        .then((response) => {
+          let data = response.data;
+          this.$message({
+            message: data.message,
+            type: "success",
+          });
+          this.switch_disabled = "";
+        }).catch(error => { this.switch_disabled = ""});
+    },
   },
 };
 </script>

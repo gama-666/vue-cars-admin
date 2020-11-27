@@ -1,6 +1,6 @@
 <template>
-  <el-dialog title="新增车辆品牌" :visible.sync="dialogVisble" @opened="opened" @close="close" :close-on-click-modal="false">
-    <el-form ref="ruleForm" :model="form" label-width="100px">
+  <el-dialog :title="title" :visible.sync="dialogVisble" @opened="opened" @close="close" :close-on-click-modal="false">
+    <el-form ref="ruleForm"  :rules="rules"  :model="form" label-width="100px">
       <el-form-item label="品牌中文" prop="nameCh">
         <el-col :span="10">
           <el-input v-model="form.nameCh"></el-input>
@@ -38,7 +38,7 @@
   </el-dialog>
 </template>
 <script>
-import { BrandLogo, BrandAdd } from "@/api/barnd";
+import { BrandLogo, BrandAdd ,BrandEdit} from "@/api/barnd";
 export default {
   name: "AddCarsBrand",
   props: {
@@ -47,9 +47,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    data:{
+      type:Object,
+      default:()=>{}
+    }
   },
   data() {
     return {
+      title:"",
       //表单数据
       form: {
         nameCh: "",
@@ -65,19 +70,42 @@ export default {
       logo_data: [],
       //禁启用状态
       radio_disabled: this.$store.state.config.radio_disabled,
-    };
+      //表单验证规则
+      rules: {
+        nameCh: [
+          { required: true, message: "品牌名称不能为空", trigger: 'blur'},
+        ],        
+        nameEn: [
+          { required: true, message: "品牌名称不能为空", trigger: 'blur'},
+        ]
+      },
+      //编辑数据
+      edit_data:{}
+    }
   },
   methods: {
     //关闭按钮
     close() {
       this.$emit("update:flagVisble", false);
       this.logo_current = "";
+      this.form={}
     },
     //确定按钮
     onSubmit() {
-      this.$emit("update:flagVisble", false);
-      this.brandAdd();
+      if(this.form.nameCh != "" && this.form.nameEn != "") {
+            if(this.form.id){
+                this.brandEdit()
+            }else{
+                this.brandAdd();
+            }
+      }else{
+          this.$message({
+            message: "品牌名称不能为空",
+            type: "success",
+          });
+      }
     },
+
     //添加请求接口
     brandAdd() {
       this.form.imgUrl = this.logo_current;
@@ -94,8 +122,25 @@ export default {
           this.resetForm("ruleForm");
         });
     },
-    //弹窗打开时回调
+    //修改请求接口
+    brandEdit(){
+       this.form.imgUrl = this.logo_current;
+      BrandEdit(this.form)
+        .then((response) => {
+          const data = response.data;
+          this.$message({
+            message: data.message,
+            type: "success",
+          });
+          this.dialogVisble = false;
+          resetForm("ruleForm")
+        })
+    },
+
+
+    //弹窗打开回调
     opened() {
+      this.title = this.form.id ?'修改停车场':'新增停车场';
       this.getBarndLogo();
     },
     //重置表单
@@ -115,14 +160,24 @@ export default {
       });
     },
   },
+
   //监听弹窗显示隐藏开关
   watch: {
+    data: {
+      handler(newVlaue, oldVlaue) {
+        this.form = {...newVlaue };
+        this.logo_current =  this.form.imgUrl;
+      },
+    },
     flagVisble: {
       handler(newVlaue, oldVlaue) {
         this.dialogVisble = newVlaue;
       },
     },
+
   },
+
+
 };
 </script>
 <style lang="scss" scoped>
