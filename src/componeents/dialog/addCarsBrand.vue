@@ -92,6 +92,7 @@ export default {
     },
     //确定按钮
     onSubmit() {
+      console.log(this.form)
       if(this.form.nameCh != "" && this.form.nameEn != "") {
             if(this.form.id){
                 this.brandEdit()
@@ -105,7 +106,6 @@ export default {
           });
       }
     },
-
     //添加请求接口
     brandAdd() {
       this.form.imgUrl = this.logo_current;
@@ -116,7 +116,9 @@ export default {
             message: data.message,
             type: "success",
           });
+          this.dialogVisble = false;
           this.resetForm("ruleForm");
+          this.$emit("callback");
         })
         .catch((error) => {
           this.resetForm("ruleForm");
@@ -124,7 +126,7 @@ export default {
     },
     //修改请求接口
     brandEdit(){
-       this.form.imgUrl = this.logo_current;
+      this.form.imgUrl = this.logo_current;
       BrandEdit(this.form)
         .then((response) => {
           const data = response.data;
@@ -133,11 +135,10 @@ export default {
             type: "success",
           });
           this.dialogVisble = false;
-          resetForm("ruleForm")
+          this.resetForm("ruleForm");
+          this.$emit("callback");
         })
     },
-
-
     //弹窗打开回调
     opened() {
       this.title = this.form.id ?'修改停车场':'新增停车场';
@@ -160,7 +161,6 @@ export default {
       });
     },
   },
-
   //监听弹窗显示隐藏开关
   watch: {
     data: {
@@ -174,10 +174,7 @@ export default {
         this.dialogVisble = newVlaue;
       },
     },
-
   },
-
-
 };
 </script>
 <style lang="scss" scoped>
