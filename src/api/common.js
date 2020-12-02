@@ -28,3 +28,4 @@ export function GetTableData(params = {}) {
         data:params.data
     })
 }
+

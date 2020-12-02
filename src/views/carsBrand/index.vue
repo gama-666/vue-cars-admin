@@ -5,15 +5,14 @@
         <el-col :span="18">
           <el-form :inline="true" :model="form" class="demo-form-inline" label-width="100px" label-position="centen">
             <el-form-item label="车辆品牌：">
-              <el-select v-model="form.nameCh" placeholder="选择品牌">
+              <el-select v-model="form.brand" placeholder="选择品牌">
                 <el-option label="福特" value="福特"></el-option>
                 <el-option label="奔驰" value="奔驰"></el-option>
                 <el-option label="红旗" value="红旗"></el-option>
                 <el-option label="宝马" value="宝马"></el-option>
-                <el-option label="五菱" value="五菱"></el-option>
               </el-select>
               <el-form-item label="品牌型号：">
-                <el-input v-model="form.nameEn"  placeholder="型号" ></el-input>
+                <el-input v-model="form.type"  placeholder="型号" ></el-input>
               </el-form-item>
             </el-form-item>
             <el-form-item>
@@ -42,7 +41,7 @@
       </template>
        <!-- 操作 -->
       <template v-slot:logo="slotData">
-          <img  :src="slotData.data.imgUrl" width="50px" height="50px" /> 
+          <img  :src="slotData.data.imgUrl" width="40px" height="40px" /> 
       </template>
        <!-- 操作 -->
       <template v-slot:operation="slotData">
@@ -68,7 +67,7 @@ export default {
       formLabelWidth: "120px",
       //搜索
       form: {
-        parking_name: "",
+        brand: "",
         type: ""
       },
       //禁启用按钮状态，防止连续点击
@@ -125,7 +124,7 @@ export default {
       if (this.keyword && this.search_key) {
         requestData[this.search_key] = this.keyword;
       }
-      console.log(requestData)
+     
       this.$refs.table.requestData(requestData);
     },
     //编辑汽车品牌
