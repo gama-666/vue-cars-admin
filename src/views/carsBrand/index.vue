@@ -31,15 +31,14 @@
     <TableData ref="table" :config="table_conging">
      <!-- 禁启用 -->
       <template v-slot:status="slotData">
-        <el-switch
-          @change="switchChang(slotData.data)"
+        <el-switch @change="switchChang(slotData.data)"
           v-model="slotData.data.status"
           :disabled="slotData.data.id == switch_disabled"
           active-color="#13ce66"
           inactive-color="#ff4949"
         ></el-switch>
       </template>
-       <!-- 操作 -->
+       <!-- 图片 -->
       <template v-slot:logo="slotData">
           <img  :src="slotData.data.imgUrl" width="40px" height="40px" /> 
       </template>

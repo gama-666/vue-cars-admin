@@ -98,7 +98,7 @@ export default {
       }
       if (this.mapLocation) {
         this.$emit("address", {
-          fn: "setMapcenter",
+          function: "setMapcenter",
           data: {
             addressCode: this.addressCode.join(""),
             addressValue: this.addressValue.join(","),
