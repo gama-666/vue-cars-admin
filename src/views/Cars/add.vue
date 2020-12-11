@@ -1,5 +1,7 @@
 <template>
   <div class="parking-add">
+
+
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="车辆型号">
         <el-select v-model="form.area" placeholder="车辆型号">
@@ -56,10 +58,7 @@
           <el-radio label="2">油</el-radio>
           <el-radio label="3">混合动力</el-radio>
         </el-radio-group>
-        <div
-          class="progress-bar-wrap"
-          v-if="form.disabled == 1 || form.disabled == 3"
-        >
+        <div class="progress-bar-wrap" v-if="form.disabled == 1 || form.disabled == 3">
           <span class="label-text">电量：</span>
           <el-row :gutter="20">
             <el-col :span="5">
@@ -74,10 +73,8 @@
             </el-col>
           </el-row>
         </div>
-        <div
-          class="progress-bar-wrap"
-          v-if="form.disabled == 2 || form.disabled == 3"
-        >
+
+        <div class="progress-bar-wrap" v-if="form.disabled == 2 || form.disabled == 3">
           <span class="label-text">油量：</span>
           <el-row :gutter="20">
             <el-col :span="5">
@@ -149,9 +146,6 @@ export default {
       },
     };
   },
-  mounted(){
-      this.createEditor()
-  },
   methods:{
       //新增车辆
       newAdd(){
@@ -189,7 +183,10 @@ export default {
           this.editor = new Editor(this.$refs.editorDom);
           this.editor.create(); 
       }
-  }
+  },
+  mounted(){
+      this.createEditor()
+  },
 };
 </script>
 

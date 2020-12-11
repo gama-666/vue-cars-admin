@@ -225,7 +225,10 @@ export default {
             type: "success",
           });
           this.switch_disabled = "";
-        }).catch(error => { this.switch_disabled = ""});
+        })
+        .catch((error) => {
+          this.switch_disabled = "";
+        });
     },
     //编辑按钮，跳转编辑页面
     parkingEdit(id) {

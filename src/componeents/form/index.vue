@@ -1,10 +1,16 @@
 <template>
   <el-form ref="ruleForm" :model="form" label-width="100px">
-    <el-form-item v-for="item in formItem" :key="item.prop" :label="item.label" :prop="item.prop">
-      <!-- Input -->
-      <el-input v-if="item.type === 'Input'" :placeholder="item.placeholder" :style="{ width: item.width }" ></el-input>
-      <!-- 省市区 -->
-      <slot v-if="'Solt' === item.type" :name="item.slotName"/>
+    <el-form-item v-for="item in formItem" :key="item.prop" :label="item.label" :prop="item.parkingName">
+       <!-- Input -->
+      <el-input v-if="item.type === 'Input'" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled"></el-input>
+       <!-- 省市区 -->
+      <slot v-if="item.type === 'Slot'" :name="item.slotName"/>
+      <!-- 类型 -->
+      <el-radio-group  v-if="item.type === 'Radio'">
+        <el-radio v-for="item in item.options" :key="item.label" :label="item.value" >{{ item.label }}</el-radio>
+      </el-radio-group>
+
+
     </el-form-item>
   </el-form>
 </template>
@@ -12,7 +18,7 @@
 //省市区
 import CityArea from "@/componeents/common/cityArea";
 export default {
-  name: "VueForm",
+  name: "vueForm",
   props: {
     formItem: {
       type: Array,
@@ -22,7 +28,9 @@ export default {
   components: { CityArea},
   data() {
     return {
-      form: {},
+      form: {
+        type: "", //停车场类型   2	停车场类型（1：室内；2：室外）
+      },
     };
   },
   methods: {},
