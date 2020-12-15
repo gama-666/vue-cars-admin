@@ -5,55 +5,24 @@
         <el-col :span="22">
           <el-form :inline="true" :model="form" class="demo-form-inline">
             <el-form-item label="区域">
-              <CityArea
-                ref="cityAred"
-                :mapLocation="true"
-                :city_value.sync="form.area"
-                @address="callbackAddress"
-              />
+              <CityArea ref="cityAred" :mapLocation="true" :city_value.sync="form.area" @address="callbackAddress" />
             </el-form-item>
             <el-form-item label="类型">
-              <el-select
-                v-model="form.type"
-                placeholder="类型"
-                class="width-120"
-              >
-                <el-option
-                  v-for="item in parking_type"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="form.type" placeholder="类型" class="width-120">
+                <el-option v-for="item in parking_type" :key="item.label" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="禁启用">
-              <el-select
-                v-model="form.status"
-                placeholder="禁启用"
-                class="width-120"
-              >
-                <el-option
-                  v-for="item in parking_status"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+              <el-select v-model="form.status" placeholder="禁启用" class="width-120">
+                <el-option v-for="item in parking_status" :key="item.label" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="关键字">
-              <el-select
-                v-model="search_key"
-                placeholder="请选择"
-                class="width-120"
-              >
+              <el-select v-model="search_key" placeholder="请选择" class="width-120">
                 <el-option label="停车场名称" value="parkingName"></el-option>
                 <el-option label="详细区域" value="address"></el-option>
               </el-select>
-              <el-input
-                v-model="keyword"
-                placeholder="请输入关键字按Enter键搜索"
-                class="width-200 left-10"
-              ></el-input>
+              <el-input v-model="keyword" placeholder="请输入关键字按Enter键搜索" class="width-200 left-10"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="danger" @click="search">搜索</el-button>
@@ -71,34 +40,16 @@
     <TableData ref="table" :config="table_conging">
       <!-- 禁启用 -->
       <template v-slot:status="slotData">
-        <el-switch
-          @change="switchChang(slotData.data)"
-          v-model="slotData.data.status"
-          :disabled="slotData.data.id == switch_disabled"
-          active-color="#13ce66"
-          inactive-color="#ff4949"
-        ></el-switch>
+        <el-switch @change="switchChang(slotData.data)" v-model="slotData.data.status" :disabled="slotData.data.id == switch_disabled" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
       </template>
       <!-- 查看地图 -->
       <template v-slot:lnglat="slotData">
-        <el-button type="success" size="mini" @click="dialogShow(slotData.data)"
-          >查看地图位置</el-button
-        >
+        <el-button type="success" size="mini" @click="dialogShow(slotData.data)">查看地图位置</el-button>
       </template>
       <!-- 操作 -->
       <template v-slot:operation="slotData">
-        <el-button
-          type="danger"
-          size="mini"
-          @click="parkingEdit(slotData.data.id)"
-          >编辑</el-button
-        >
-        <el-button
-          type="warning"
-          size="mini"
-          @click="deleteParking(slotData.data.id)"
-          >删除</el-button
-        >
+        <el-button type="danger" size="mini" @click="parkingEdit(slotData.data.id)">编辑</el-button>
+        <el-button type="warning" size="mini" @click="deleteParking(slotData.data.id)">删除</el-button>
       </template>
     </TableData>
     <!-- 弹窗 -->
@@ -266,9 +217,9 @@ export default {
     },
   },
   //DOM元素渲染之前 （生命周期）
-  beforeMount() {},
+  beforeMount() { },
   //DOM元素渲染完成 （生命周期）
-  mounted() {},
+  mounted() { },
 };
 </script>
 

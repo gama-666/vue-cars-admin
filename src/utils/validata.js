@@ -30,3 +30,17 @@ export function validataCode(value) {
     let reg = /^[a-z0-9]{6}$/;
     return !reg.test(value) ? true : false;
 }
+
+//校验必须为数据
+export function validateNumber (rule, value, callback) {
+    const regNumber = /^[0-9]*$/;
+    if (!value) {
+      callback(new Error("请输入可停放车辆"))
+    } else if (!regNumber.test(value)) {
+      callback(new Error("请输入数字!"))
+    } else {
+      callback()
+    }
+}
+
+  

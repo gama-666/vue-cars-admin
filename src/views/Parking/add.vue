@@ -1,58 +1,32 @@
 <template>
   <div class="parking-add">
-    <VueForm :formItem="form_item">
-      <template v-slot:city="slotData">
-        <CityArea ref="cityAred" :mapLocation="true" :city_value.sync="form.area" @address="callbackAddress"/>
+    <VueForm :formItem="form_item" :formData="form" ref="vuForm" :formHandler="form_handler">
+      <template v-slot:city>
+        <CityArea ref="cityAred" :mapLocation="true" :city_value.sync="form.area" @address="callbackAddress" />
       </template>
-      <template v-slot:amap="slotData">
+      <template v-slot:amap>
         <div class="address-map">
-          <Map @callback="callbackComponent" :options="options_map" ref="amap"/>
+          <Map @callback="callbackComponent" :options="options_map" ref="amap" />
         </div>
       </template>
     </VueForm>
-    <el-form ref="ruleForm" :rules="rules" :model="form" label-width="100px">
-      <el-form-item>
-        <el-button type="primary" :loaging="button_loading" @click="onSubmit('ruleForm')" >确定</el-button>
-      </el-form-item>
-    </el-form>
   </div>
 </template>
 <script>
 //组件
 import Map from "@/componeents/amap";
 import CityArea from "@/componeents/common/cityArea";
-//form表单
-import VueForm from "@/componeents/form";
+import VueForm from "@/componeents/form";  //form表单
 //api
 import { ParkingAdd, parkingDetailed, parkingEdit } from "@/api/parking";
+//自定义校验
+import { validateNumber } from "@/utils/validata";
 export default {
   name: "ParkingAdd",
   components: { Map, CityArea, VueForm },
   data() {
     return {
-      //表单配置
-      form_item: [
-        { type: "Input", label: "停车场名称", placeholder: "请输入停车场名称", prop: "parkingName", width: "200px",},
-        { type: "Slot", slotName: "city", label: "区域" },
-        {
-          type: "Radio",
-          label: "类型",
-          prop: "type",
-          options: this.$store.state.app.parking_type,
-        },
-        { type: "Input", label: "可停放车辆",  prop: "carsNumber", width: "200px", },
-        {
-          type: "Radio",
-          label: "禁启用",
-          prop: "status",
-          options: this.$store.state.app.radio_disabled,
-        },
-        { type: "Slot", slotName: "amap", label: "位置" },
-        { type: "Input", label: "经纬度",  prop: "lnglat", width: "200px", disabled: true,},
-      ],
-
-      options_map: { mapLoad: true }, //地图配置
-      id: this.$route.query.id, //编辑按钮传过来的id
+      //表单数据配置
       form: {
         parkingName: "", //停车场名称  String
         area: "", //省市区     String
@@ -61,27 +35,39 @@ export default {
         carsNumber: "", //最多可停放数量  true	Number	0	最多可停放数量
         status: "", //禁启用  Number	2	禁启用（false：禁用；true：启用）
         lnglat: "", //经纬度    String
-        content: "", //停车场描述 String
       },
-      //表单验证规则
-      rules: {
-        parkingName: [
-          { required: true, message: "请输入停车场名称", trigger: "change" },
-        ],
-        carsNumber: [
-          { required: true, message: "不能为空" },
-          { type: "number", message: "请输入数字" },
-        ],
-        area: [{ required: true, message: "请选择省市区", trigger: "change" }],
-        lnglat: [
-          { required: true, message: "经纬度不能为空", trigger: "change" },
-        ],
-      },
+      //表单配置
+      form_item: [
+        { type: "Input", label: "停车场名称", prop: "parkingName", placeholder: "请输入停车场名称", width: "200px", required: true, },
+        { type: "Slot", label: "区域", prop: "area", slotName: "city" },
+        { type: "Radio", label: "类型", prop: "type", options: this.$store.state.app.parking_type, required: true, },
+        {
+          type: "Input", label: "可停放车辆", prop: "carsNumber", width: "200px",
+          validator: [{ validator: validateNumber, trigger: "change" }]
+        },
+        { type: "Radio", label: "禁启用", prop: "status", options: this.$store.state.app.parking_status_json, required: true, },
+        { type: "Slot", label: "位置", slotName: "amap", },
+        { type: "Input", label: "经纬度", prop: "lnglat", width: "200px", disabled: true, },
+      ],
+      form_handler: [
+        { label: '确定', type: 'primary', handler: () => this.formValidate() },
+      ],
+      id: this.$route.query.id, //编辑按钮传过来的id
+      options_map: { mapLoad: true }, //地图配置
       //按钮加载状态
       button_loading: false,
     };
   },
   methods: {
+    //提交按钮，验证通过后
+    formValidate() {
+      this.$refs.vuForm.$refs.ruleForm.validate((valid) => {
+        if (valid) { //验证通过
+          //判断是否有id，没有就添加、有就修改
+          this.id ? this.editParking() : this.addParKing();
+        }
+      });
+    },
     //回调,执行组件函数
     callbackAddress(params) {
       if (params.function) this[params.function](params.data.addressCode);
@@ -102,17 +88,6 @@ export default {
     setMapcenter(data) {
       this.$refs.amap.setMapcenter(data);
     },
-    //提交按钮
-    onSubmit(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          //添加停车场接口
-          this.id ? this.editParking() : this.addParKing();
-        } else {
-          return false;
-        }
-      });
-    },
     //新增停车场接口
     addParKing() {
       this.button_loading = true;
@@ -124,9 +99,9 @@ export default {
             type: "success",
           });
           this.button_loading = false;
-          this.resetForm("ruleForm"); //重置表单
           this.$refs.cityAred.clear(); //重置级联选择
           this.$refs.amap.clearMarker(); //清除点覆盖物
+          this.$router.push({ path: "/parkingIndex" });
         })
         .catch(() => {
           this.button_loading = false;
@@ -145,14 +120,15 @@ export default {
       });
     },
     //重置表单
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs.vuForm.$refs.resetFields();
     },
     //获取详情,点击编辑时，根据ID调取接口数据，并重新定位地图
     getDetaile() {
       if (this.id) {
         parkingDetailed({ id: this.id }).then((respone) => {
           const data = respone.data.data;
+          console.log(data)
           for (let key in data) {
             if (data[key]) this.form[key] = data[key];
           }
@@ -167,7 +143,7 @@ export default {
     },
   },
   //DOM元素渲染之前 （生命周期）
-  beforeMount() {},
+  beforeMount() { },
 };
 </script>
 <style lang="scss" scoped>
