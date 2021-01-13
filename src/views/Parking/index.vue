@@ -222,7 +222,6 @@ export default {
   mounted() { },
 };
 </script>
-
 <style lang="scss" scoped>
 .text-right {
   text-align: right;

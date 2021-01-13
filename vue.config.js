@@ -55,16 +55,18 @@ module.exports = {
         port: 8080, // 服务端口
         hot: true, //开启热更新
         hotOnly: false,
-        proxy: {
-            [process.env.VUE_APP_API]: {
-                target: process.env.VUE_API_DEV_TARGET, //API服务器的地址
+        proxy: {  // 设置代理
+            '/devapi': {
+                /* 目标代理服务器地址 */
+                target: 'http://www.web-jshtml.cn/api/cars',
+                /* 允许跨域 */
                 changeOrigin: true,
+                ws: true,
                 pathRewrite: {
-                    [`^${process.env.VUE_APP_API}`]: ''
+                    '^/devapi': ''
                 }
             }
-            // http://www.web-jshtml.cn/api/vue3  /api/getCode
-        }
+        }    
     },
     pluginOptions: {
         // 第三方插件配置

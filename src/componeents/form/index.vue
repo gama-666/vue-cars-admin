@@ -3,6 +3,14 @@
     <el-form-item v-for="item in formItem" :key="item.prop" :label="item.label" :prop="item.prop" :rules="item.rules">
       <!-- Input -->
       <el-input v-if="item.type === 'Input'" v-model.trim="formData[item.prop]" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled"></el-input>
+      <!-- Select -->
+      <el-select filterable v-if="item.type === 'Select'"  v-model.trim="formData[item.prop]" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled">
+        <el-option v-for="selectItem in item.options" :key="selectItem.id" :label="selectItem.label  || selectItem[item.select_value] " :value="selectItem.value || selectItem[item.select_id]"></el-option>
+      </el-select>
+      <!-- 禁启用 -->
+      <el-radio-group v-if="item.type === 'Disabled'" v-model="formData[item.prop]">
+        <el-radio v-for="radio in radio_disabled" :key="radio.label" :label="radio.value">{{ radio.label }}</el-radio>
+      </el-radio-group>
       <!-- 省市区 -->
       <slot v-if="item.type === 'Slot'" :name="item.slotName" />
       <!-- 类型 -->
@@ -35,9 +43,11 @@ export default {
   },
   data() {
     return {
+      radio_disabled: this.$store.state.config.radio_disabled,
       type_Msg: {
         "Input": "请输入",
-        "Radio": "请选择"
+        "Radio": "请选择",
+        "Select": "请选择",
       }
     };
   },

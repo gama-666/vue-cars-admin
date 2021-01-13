@@ -2,9 +2,14 @@ import axios from "axios";
 import { Message } from 'element-ui';
 import { getToken, getUsername } from "./app";
 
+
+
+const BASEURL = process.env.NODE_ENV === 'production' ? '/productapi' : '/devapi';
+
+
 // 创建实例
 const service = axios.create({
-  baseURL: process.env.VUE_APP_API,    // 请求地址
+  baseURL: BASEURL,    // 请求地址
   timeout: 5000,  // 超时
 });
 

@@ -1,5 +1,5 @@
 import http from "@/utils/request";
-import  requestUrl  from "./requestUrl";
+import requestUrl from "./requestUrl";
 
 /*注册*/
 export function loadTableData(parms) {
@@ -20,12 +20,34 @@ export function GetCity(data) {
 }
 
 
-/*传入url请求接口*/
+/*传入url请求接口,获取table列表*/
 export function GetTableData(params = {}) {
     return http.request({
         method: "post",
         url: requestUrl[params.url],
-        data:params.data
+        data: params.data
     })
 }
+
+
+
+/*获取车辆品牌*/
+export function GetCarsBrand(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/common/getCarsBrand/",
+        data
+    })
+}
+
+/*获取停车场*/
+export function GetParking(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/common/getParking/",
+        data
+    })
+}
+
+
 
