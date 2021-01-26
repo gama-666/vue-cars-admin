@@ -63,7 +63,7 @@ import CityArea from "@/componeents/common/cityArea";
 import TableData from "@/componeents/tableData";
 //弹窗，显示地图 组件
 import ShowMaoLocation from "@/componeents/dialog/showMaoLocation";
-//接口 停车场
+//接口 删除停车场、停车场次状态
 import { parkingDelete, parkingStatus } from "@/api/parking";
 export default {
   name: "ParkingIndex",
@@ -206,6 +206,7 @@ export default {
       }
       this.$refs.table.requestData(requestData);
     },
+    
     //区域（省市区）回调,执行组件函数
     callbackAddress(params) {
       this.form.area = params.data.addressValue;

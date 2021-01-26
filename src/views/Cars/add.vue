@@ -1,7 +1,6 @@
 <template>
   <div class="parking-add">
-    <VueForm :formItem="form_item" :formData="form_data" ref="vuForm" :formHandler="form_handler">
-
+    <VueForm :formItem="form_item" :formData="form_data" ref="vueForm" :formHandler="form_handler">
       <template v-slot:maintainDate>
         <el-row :gutter="10">
           <el-col :span="4">
@@ -50,24 +49,18 @@
           </el-row>
         </div>
       </template>
-      <template v-slot:content>
-        <div ref="editorDom" style="text-align:left;"></div>
-      </template>
     </VueForm>
   </div>
 </template>
 <script>
-import Editor from "wangeditor";  // 富文本编辑器
 import { CarsAdd, CarsDetailed, CarsEdit } from "@/api/cars";  //新增接口、详情、修改
 import { GetCarsBrand, GetParking } from "@/api/common";  //车辆品牌和停车场接口
 import VueForm from "@/componeents/form";  //form表单
 export default {
-  name: "ParkingAdd",
+  name: "CarsAdd",
   components: { VueForm },
   data() {
     return {
-      //富文本对象
-      editor: null,
       //能源类型固定数据
       energyType: this.$store.state.config.energyType,
       //表单配置项
@@ -84,7 +77,7 @@ export default {
         { type: "Slot", label: "能源类型", slotName: "energyType", placeholder: "请选择能源类型", prop: "energyType" },
         { type: "Disabled", label: "禁启用", placeholder: "请选择禁启用", prop: "status" },
         { type: "Slot", label: "车辆属性", slotName: "carsAttr", prop: "carsAttr" },
-        { type: "Slot", label: "车辆描述", slotName: "content", prop: "content" }
+        { type: "wangeditor", label: "车辆描述", prop: "content" }
       ],
       //表单确定按钮
       form_handler: [{ label: '确定', type: 'primary', handler: () => this.formValidate() }],
@@ -115,7 +108,7 @@ export default {
     formValidate() {
       this.formatCarsAttr() //车辆属性格式化
       // 表单验证
-      this.$refs.vuForm.$refs.ruleForm.validate((valid) => {
+      this.$refs.vueForm.$refs.ruleForm.validate((valid) => {
         if (valid) { //验证通过
           //判断是否有id，没有就添加、有就修改
           this.id ? this.carsEdit() : this.newAdd();
@@ -129,18 +122,18 @@ export default {
           message: response.data.message,
           type: "success"
         })
-        this.$router.push({ path: "/carsIndex" });
+        this.$refs.vueForm.reset();
+        this.cars_Attr = [];
+        this.form_data.content = "";
       })
     },
-    //车辆修改接口
+    //车辆编辑接口
     carsEdit() {
-      console.log(this.form_data)
-      CarsEdit(this.form_data).then((response) => {
+      CarsEdit({ ...this.form_data, id: this.id }).then((response) => {
         this.$message({
           message: response.data.message,
           type: "success"
         })
-        this.$router.push({ path: "/carsIndex" });
       })
     },
     //获取车辆品牌
@@ -195,31 +188,20 @@ export default {
       if (this.id) {
         CarsDetailed({ id: this.id }).then(response => {
           //车辆属性格式化
-          let obj = JSON.parse(response.data.data.carsAttr);
-          for (let key in obj) {
-            this.cars_Attr.push({
-              attr_key: key, attr_value: obj[key]
-            })
+          if (response.data.data.carsAttr != "Array") {
+            let obj = JSON.parse(response.data.data.carsAttr);
+            for (let key in obj) {
+              this.cars_Attr.push({
+                attr_key: key, attr_value: obj[key]
+              })
+            }
           }
-          this.form_data = response.data.data
+          this.form_data = response.data.data;
         })
       }
     },
-    //重置表单
-    resetForm() {
-      this.$refs.vuForm.$refs.resetFields();
-    },
-    //创建富文本对象
-    createEditor() {
-      this.editor = new Editor(this.$refs.editorDom)
-      this.editor.config.onchange = html => {
-        this.form_data.content = html//动态获取富文本编辑器的内容
-      }
-      this.editor.create();
-    }
   },
   mounted() {
-    this.createEditor()       //创建富文本对象
     this.getCarsBrandList()   //获取车辆品牌
     this.getParking()         //获取停车场
     this.carsDetailed()       //车辆详情

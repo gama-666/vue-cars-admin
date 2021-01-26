@@ -5,12 +5,8 @@
         <el-col :span="18">
           <el-form :inline="true" :model="form" class="demo-form-inline" label-width="100px" label-position="centen">
             <el-form-item label="车辆品牌：">
-              <el-select v-model="form.type" placeholder="选择品牌">
-                <el-option label="福特" value="1"></el-option>
-                <el-option label="奔驰" value="2"></el-option>
-                <el-option label="红旗" value="3"></el-option>
-                <el-option label="宝马" value="4"></el-option>
-                <el-option label="五菱" value="5"></el-option>
+              <el-select v-model="form.carsBrand" placeholder="选择品牌">
+                <el-option v-for="item in form.option" :key="item.id" :value="item.nameEn" :label="item.nameCh"></el-option>
               </el-select>
               <el-form-item label="品牌型号：">
                 <el-input v-model="form.parking_name" placeholder="型号"></el-input>
@@ -45,8 +41,11 @@
 <script>
 import TableData from "@/componeents/tableData";
 import { CarsDelete, CarsStatus } from "@/api/cars";  //车辆删除，禁启用
+import { GetCarsBrand } from "@/api/common";  //车辆品牌
+import { CarsList } from "@/api/cars";  //车辆列表
+
 export default {
-  name: "CarsBrandIndex",
+  name: "CarsIndex",
   components: { TableData },
   data() {
     return {
@@ -55,11 +54,34 @@ export default {
       table_conging: {
         //表头
         thend: [
-          { prop: "nameCh", label: "品牌名称" },
+          { prop: "nameCh", label: "车辆品牌", width: "100px" },
+          { prop: "imgUrl", label: "车辆LOGO", type: "image", width: "150px", imgWidth: 40 },
+          { prop: "address", label: "区域" },
           { prop: "parkingName", label: "停车场名称" },
-          { prop: "carsMode", label: "车辆品牌" },
-          { prop: "address", label: "城市" },
-          { prop: "status", label: "禁启用", type: "slot", slotName: "status", },
+          { prop: "carsMode", label: "品牌名称" },
+          {
+            prop: "yearCheck", label: "年检", type: "function", width: "100px",
+            callback: (row, prop) => {
+              const data = this.$store.state.config.year_check;
+              const filterData = data.filter(item => item.value == parseInt(row[prop]))
+              if (filterData.length > 0) {
+                return filterData[0].label
+              }
+              return ""
+            }
+          },
+          {
+            prop: "energyType", label: "能源类型", type: "function",
+            callback: (row, prop) => {
+              const data = this.$store.state.config.energyType;
+              const filterData = data.filter(item => item.value == parseInt(row[prop]))
+              if (filterData.length > 0) {
+                return filterData[0].label
+              }
+              return ""
+            }
+          },
+          { prop: "status", label: "禁启用", type: "slot", slotName: "status", width: "100px" },
           { prop: "operate", label: "操作", type: "slot", slotName: "operation", },
         ],
         //请求地址和参数
@@ -73,14 +95,9 @@ export default {
       switch_disabled: "",
       //表单数据
       form: {
-        parking_name: "",
-        name: "",
-        type: "",
-        area: "",
-        carsNumber: "",
-        disabled: "1",
-        address: "32155,565654",
-        operate: "",
+        carsBrand: "",     //车辆品牌
+        option: [],   //默认车辆品牌数据
+        parking_name: "", //品牌型号
       },
     };
   },
@@ -88,6 +105,15 @@ export default {
     //新增车辆按钮,跳转新增车辆页面
     CarsAdd() {
       this.$router.push({ path: "/carsAdd" });
+    },
+    //获取车辆品牌
+    getCarsBrandList() {
+      GetCarsBrand().then((respone) => {
+        const data = respone.data.data.data;
+        if (data) {
+          this.form.option = data;
+        }
+      })
     },
     //删除停车广场
     deleteCars(id) {
@@ -137,8 +163,17 @@ export default {
     },
     //搜索
     search() {
-      console.log("submit!");
+      const requestData = {
+        pageSize: 10,
+        pageNumber: 1,
+        carsBrand: this.form.carsBrand,
+        carsMode: this.form.parking_name
+      }
+      this.$refs.table.requestData(requestData);
     }
+  },
+  mounted() {
+    this.getCarsBrandList()   //获取车辆品牌
   },
 };
 </script>

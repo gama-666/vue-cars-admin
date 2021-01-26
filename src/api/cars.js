@@ -10,6 +10,17 @@ export function CarsAdd(data = {}) {
     })
 }
 
+
+/*车辆添加*/
+export function CarsList(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/cars/List/",
+        data
+    })
+}
+
+
 /*车辆删除*/
 export function CarsDelete(data = {}) {
     return http.request({
@@ -28,6 +39,15 @@ export function CarsEdit(data = {}) {
     })
 }
 
+/*车辆禁启用*/
+export function CarsStatus(data = {}) {
+    return http.request({
+        method: "post",
+        url: "/cars/status/",
+        data
+    })
+}
+
 /*车辆详情*/
 export function CarsDetailed(data = {}) {
     return http.request({
@@ -37,13 +57,5 @@ export function CarsDetailed(data = {}) {
     })
 }
 
-/*车辆禁启用*/
-export function CarsStatus(data = {}) {
-    return http.request({
-        method: "post",
-        url: "/cars/status/",
-        data
-    })
-}
 
 

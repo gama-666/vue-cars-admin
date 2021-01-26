@@ -4,7 +4,7 @@
       <!-- Input -->
       <el-input v-if="item.type === 'Input'" v-model.trim="formData[item.prop]" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled"></el-input>
       <!-- Select -->
-      <el-select filterable v-if="item.type === 'Select'"  v-model.trim="formData[item.prop]" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled">
+      <el-select filterable v-if="item.type === 'Select'" v-model.trim="formData[item.prop]" :placeholder="item.placeholder" :style="{ width: item.width }" :disabled="item.disabled">
         <el-option v-for="selectItem in item.options" :key="selectItem.id" :label="selectItem.label  || selectItem[item.select_value] " :value="selectItem.value || selectItem[item.select_id]"></el-option>
       </el-select>
       <!-- 禁启用 -->
@@ -17,6 +17,10 @@
       <el-radio-group v-if="item.type === 'Radio'" v-model="formData[item.prop]">
         <el-radio v-for="radio in item.options" :key="radio.label" :label="radio.value">{{ radio.label }}</el-radio>
       </el-radio-group>
+      <!-- 富文本编辑器 -->
+      <template v-if="item.type === 'wangeditor'">
+        <EditorDom :isClear="wangeditorClear" ref="wangeditor" :value="formData[item.prop]" :content.sync="formData[item.prop]" />
+      </template>
     </el-form-item>
     <!-- 提交按钮 -->
     <el-form-item>
@@ -25,8 +29,10 @@
   </el-form>
 </template>
 <script>
+import EditorDom from "@/componeents/common/wangeditor";  //富文本编辑器
 export default {
   name: "vueForm",
+  components: { EditorDom },
   props: {
     formItem: {
       type: Array,
@@ -48,10 +54,20 @@ export default {
         "Input": "请输入",
         "Radio": "请选择",
         "Select": "请选择",
-      }
+      },
+      //清除富文本
+      wangeditorClear: false,
     };
   },
   methods: {
+    //重置表单
+    reset() {
+      this.$refs.ruleForm.resetFields()
+      //重置富文本,判断是否存在富文本
+      if (this.$refs.wangeditor) {
+        this.wangeditorClear = !this.wangeditorClear;
+      }
+    },
     //表单基础数据处理
     formInitData() {
       this.formItem.forEach((item) => {

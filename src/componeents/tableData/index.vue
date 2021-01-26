@@ -1,38 +1,36 @@
 <template>
   <div>
-    <el-table  :data="table_data" border style="width: 100%"   v-loading="table_loading">
+    <el-table :data="table_data" border style="width: 100%" v-loading="table_loading">
       <el-table-column type="selection" v-if="table_config.checkbox" width="40"></el-table-column>
       <template v-for="item in table_config.thend">
         <!-- 如果有 function 回调 -->
-        <el-table-column v-if="item.type=='function'" :prop="item.prop" :label="item.label" :key="item.prop">
+        <el-table-column v-if="item.type=='function'" :prop="item.prop" :label="item.label" :key="item.prop" :width="item.width">
           <template slot-scope="scope">
             <span>{{item.callback && item.callback(scope.row,item.prop)}}</span>
           </template>
         </el-table-column>
         <!-- 插槽 slot -->
-        <el-table-column v-else-if="item.type=='slot'" :prop="item.prop" :label="item.label" :key="item.prop">
+        <el-table-column v-else-if="item.type=='slot'" :prop="item.prop" :label="item.label" :key="item.prop" :width="item.width">
           <template slot-scope="scope">
-              <slot :name="item.slotName" :data="scope.row"></slot>
+            <slot :name="item.slotName" :data="scope.row"></slot>
+          </template>
+        </el-table-column>
+        <!-- 图标显示 -->
+        <el-table-column v-else-if="item.type=='image'" :prop="item.prop" :key="item.prop" :label="item.label" :width="item.width">
+          <template slot-scope="scope">
+            <img :src="scope.row.imgUrl" :width="item.imgWidth || 50" alt="" />
           </template>
         </el-table-column>
         <!-- 否则纯文本的渲染 -->
-        <el-table-column v-else :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
+        <el-table-column v-else :prop="item.prop" :label="item.label" :key="item.prop" :width="item.width"></el-table-column>
       </template>
     </el-table>
-       <!-- 分页 -->
-      <div class="block" v-if="table_config.pagination">
-       <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-sizes="[10, 20, 50, 100]"
-          :page-size="10"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-        >
-        </el-pagination>
-      </div>
-     
+    <!-- 分页 -->
+    <div class="block" v-if="table_config.pagination">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 50, 100]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
+
   </div>
 </template>
 <script>
@@ -42,30 +40,30 @@ export default {
   props: {
     config: {
       type: Object,
-      default: () => {},
+      default: () => { },
     },
   },
   data() {
     return {
-      table_data:[],    //表格数据
+      table_data: [],    //表格数据
       table_config: {
         thend: [],      //表头标题
-        checkbox:true,  //复选框是否显示
-        url:"",         //请求的接口
-        data:{},
-        pagination:true //配置分页，默认显示
+        checkbox: true,  //复选框是否显示
+        url: "",         //请求的接口
+        data: {},
+        pagination: true //配置分页，默认显示
       },
       total: 0,         //数据总条数
       currentPage: 1,   //当前页码
-      table_loading:true,
+      table_loading: true,
     };
   },
   methods: {
     //初始化配置
-    initConfig(){
-      for(let key in this.config){
-        if(Object.keys(this.table_config).includes(key)){
-         this.table_config[key]=this.config[key];
+    initConfig() {
+      for (let key in this.config) {
+        if (Object.keys(this.table_config).includes(key)) {
+          this.table_config[key] = this.config[key];
         }
       }
       this.loadData()   //配置项完成之后，开始请求接口的表格数据
@@ -74,7 +72,7 @@ export default {
     loadData() {
       const requestData = {
         url: this.table_config.url,
-        data:this.table_config.data
+        data: this.table_config.data
       };
       GetTableData(requestData).then((response) => {
         this.table_data = response.data.data.data;
@@ -82,8 +80,8 @@ export default {
         this.table_loading = false;
       });
     },
-    requestData(params){
-      if(params){ this.table_config.data = params}
+    requestData(params) {
+      if (params) { this.table_config.data = params }
       this.loadData()
     },
     //页码(10条/页、20条每页、......)
@@ -99,18 +97,18 @@ export default {
   },
 
   //监听有没有传入值，如果有初始化配置
-  watch:{
-    config:{
-      handler(newVal){
+  watch: {
+    config: {
+      handler(newVal) {
         this.initConfig()
       },
-      immediate:true
+      immediate: true
     }
   },
   //DOM元素渲染之前 （生命周期）
-  beforeMount() {},
+  beforeMount() { },
   //DOM元素渲染完成 （生命周期）
-  mounted() {},
+  mounted() { },
 
 };
 </script>
