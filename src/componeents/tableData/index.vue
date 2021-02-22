@@ -45,17 +45,19 @@ export default {
   },
   data() {
     return {
+      //初始化是否请求接口
       table_data: [],    //表格数据
       table_config: {
         thend: [],      //表头标题
         checkbox: true,  //复选框是否显示
         url: "",         //请求的接口
         data: {},
-        pagination: true //配置分页，默认显示
+        pagination: true, //配置分页，默认显示
+        isReqest: true,
       },
       total: 0,         //数据总条数
       currentPage: 1,   //当前页码
-      table_loading: true,
+      table_loading: false,
     };
   },
   methods: {
@@ -66,7 +68,7 @@ export default {
           this.table_config[key] = this.config[key];
         }
       }
-      this.loadData()   //配置项完成之后，开始请求接口的表格数据
+      this.table_config.isReqest && this.loadData();   //配置项完成之后，开始请求接口的表格数据
     },
     //表格数据请求接口
     loadData() {
@@ -74,6 +76,7 @@ export default {
         url: this.table_config.url,
         data: this.table_config.data
       };
+      this.table_loading = true;
       GetTableData(requestData).then((response) => {
         this.table_data = response.data.data.data;
         this.total = response.data.data.total;

@@ -6,12 +6,12 @@ import { getToken, getUsername } from "./app";
 
 const BASEURL = process.env.NODE_ENV === 'production' ? '/productapi' : '/devapi';
 
-
 // 创建实例
 const service = axios.create({
   baseURL: BASEURL,    // 请求地址
   timeout: 5000,  // 超时
 });
+
 
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {

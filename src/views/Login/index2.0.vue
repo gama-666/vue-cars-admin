@@ -2,22 +2,10 @@
   <div id="login">
     <div class="login-wrap">
       <ul class="menu-tab">
-        <li
-          v-for="item in menuTab"
-          :key="item.id"
-          :class="{'current':item.current}"
-          @click="toggleMeuu(item)"
-        >{{item.txt}}</li>
+        <li v-for="item in menuTab" :key="item.id" :class="{'current':item.current}" @click="toggleMeuu(item)">{{item.txt}}</li>
       </ul>
       <!-- 表单 -->
-      <el-form
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        ref="ruleForm"
-        size="small"
-        class="login-form"
-      >
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" size="small" class="login-form">
         <el-form-item prop="username">
           <label>邮箱</label>
           <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
@@ -25,24 +13,12 @@
 
         <el-form-item prop="password">
           <label>密码</label>
-          <el-input
-            type="password"
-            v-model="ruleForm.password"
-            autocomplete="off"
-            minlength="6"
-            maxlength="20"
-          ></el-input>
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="passwords" v-if="model === 'register'">
           <label>重复密码</label>
-          <el-input
-            type="password"
-            v-model="ruleForm.passwords"
-            autocomplete="off"
-            minlength="6"
-            maxlength="20"
-          ></el-input>
+          <el-input type="password" v-model="ruleForm.passwords" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
 
         <el-form-item prop="code">
@@ -148,8 +124,8 @@ export default {
       }
     };
   },
-  created() {},
-  mounted() {},
+  created() { },
+  mounted() { },
   /************************************************************************/
   /*函数位置*/
   methods: {
@@ -161,7 +137,7 @@ export default {
       );
       //修改模块的值
       this.model = data.type;
-      this.ruleForm.username="";
+      this.ruleForm.username = "";
     },
     //、表单的方法
     submitForm(formName) {

@@ -8,7 +8,7 @@ export function GetSms(data) {
         data
     })
 }
-/*登录*/
+/*注册*/
 export function Register(data) {
     return http.request({
         method: 'post',
@@ -16,7 +16,8 @@ export function Register(data) {
         data
     })
 }
-/*注册*/
+
+/*登录*/
 export function Login(data) {
     return http.request({
         method: 'post',
